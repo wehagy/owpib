@@ -1,0 +1,96 @@
+# https://patch-diff.githubusercontent.com/raw/openwrt/packages/pull/25784.patch
+From b93aba4ed6fa3237ddfeec37ad60dc0e53fcf8af Mon Sep 17 00:00:00 2001
+From: Wesley Gimenes <wehagy@proton.me>
+Date: Wed, 11 Dec 2024 18:48:19 -0300
+Subject: [PATCH 1/3] netbird: change maintainer
+
+- Add myself as maintainer
+- Remove `Oskari Rauta <oskari.rauta@gmail.com>`
+
+Signed-off-by: Wesley Gimenes <wehagy@proton.me>
+(cherry picked from commit 2594fc3e2ebdba785dca3ac3ccf944359c8eb5b1)
+---
+ net/netbird/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/net/netbird/Makefile b/net/netbird/Makefile
+index a98f9cf48685cc..223296cc07c8cd 100644
+--- a/net/netbird/Makefile
++++ b/net/netbird/Makefile
+@@ -8,7 +8,7 @@ PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
+ PKG_SOURCE_URL:=https://codeload.github.com/netbirdio/netbird/tar.gz/v$(PKG_VERSION)?
+ PKG_HASH:=21cd8ed88ac0f284be11deb70cfe8afbafcba9d888e50bda9fa8f45d87b28dba
+ 
+-PKG_MAINTAINER:=Oskari Rauta <oskari.rauta@gmail.com>
++PKG_MAINTAINER:=Wesley Gimenes <wehagy@proton.me>
+ PKG_LICENSE:=BSD-3-Clause
+ PKG_LICENSE_FILES:=LICENSE
+ 
+
+From 975c0041434f036ebca859ce9398dc6d08e528d9 Mon Sep 17 00:00:00 2001
+From: Wesley Gimenes <wehagy@proton.me>
+Date: Sun, 22 Dec 2024 19:21:31 -0300
+Subject: [PATCH 2/3] netbird: revert fix to build with musl >1.2.4
+
+Partially revert: 7b3d033ab651dd11e0db5fb099d106c9e09a2dc6
+ - Revert: Also fixes issue of not being able to build with musl >1.2.4,
+   The issue has been resolved as of March 2024. For more details, see:
+   https://github.com/mattn/go-sqlite3/issues/1164#issuecomment-1975022901
+
+Signed-off-by: Wesley Gimenes <wehagy@proton.me>
+(cherry picked from commit 851386dc67bddcd7b1c4fbd85d4576335d703c48)
+---
+ net/netbird/Makefile | 6 ------
+ 1 file changed, 6 deletions(-)
+
+diff --git a/net/netbird/Makefile b/net/netbird/Makefile
+index 223296cc07c8cd..45156d1fd6cf2c 100644
+--- a/net/netbird/Makefile
++++ b/net/netbird/Makefile
+@@ -44,12 +44,6 @@ define Package/netbird/conffiles
+ /etc/netbird/config.json
+ endef
+ 
+-# Workaround for musl 1.2.4 compability in mattn/go-sqlite3
+-# https://github.com/mattn/go-sqlite3/issues/1164
+-ifneq ($(CONFIG_USE_MUSL),)
+-	TARGET_CFLAGS += -D_LARGEFILE64_SOURCE
+-endif
+-
+ define Package/netbird/install
+ 	$(call GoPackage/Package/Install/Bin,$(PKG_INSTALL_DIR))
+ 	$(INSTALL_DIR) $(1)/usr/bin $(1)/etc/init.d
+
+From 5a4e6f5d3a7d6220aadef33a72131aaaa886ff9b Mon Sep 17 00:00:00 2001
+From: Wesley Gimenes <wehagy@proton.me>
+Date: Sat, 18 Jan 2025 00:04:24 -0300
+Subject: [PATCH 3/3] netbird: update to 0.36.3
+
+changelog: https://github.com/netbirdio/netbird/releases/tag/v0.36.3
+
+Signed-off-by: Wesley Gimenes <wehagy@proton.me>
+(cherry picked from commit 8628bd16bbe6521e36ebe591356a319792eae505)
+---
+ net/netbird/Makefile | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/net/netbird/Makefile b/net/netbird/Makefile
+index 45156d1fd6cf2c..8c703118b036e6 100644
+--- a/net/netbird/Makefile
++++ b/net/netbird/Makefile
+@@ -1,12 +1,12 @@
+ include $(TOPDIR)/rules.mk
+ 
+ PKG_NAME:=netbird
+-PKG_VERSION:=0.30.3
++PKG_VERSION:=0.36.3
+ PKG_RELEASE:=1
+ 
+ PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
+ PKG_SOURCE_URL:=https://codeload.github.com/netbirdio/netbird/tar.gz/v$(PKG_VERSION)?
+-PKG_HASH:=21cd8ed88ac0f284be11deb70cfe8afbafcba9d888e50bda9fa8f45d87b28dba
++PKG_HASH:=71d0e7c342bdcd1b74b9b4e99d2c87f898ed54f780b4adf6bbda77900b842ec8
+ 
+ PKG_MAINTAINER:=Wesley Gimenes <wehagy@proton.me>
+ PKG_LICENSE:=BSD-3-Clause
+

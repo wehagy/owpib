@@ -70,7 +70,7 @@ jobs:
 #          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name : Build
-        run: ./owb ${{ matrix.image }} --packages luci-app-uhttpd
+        run: ./owb ${{ matrix.image }} openwrt-24.10 --packages luci-app-uhttpd
 #      - name: Build and push
 #        uses: docker/build-push-action@v6
 #        with:
