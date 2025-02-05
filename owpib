@@ -304,7 +304,7 @@ for package in "\$(compile_packages)"; do
   # Compile the package using all available CPU cores
   ./scripts/feeds install "\${package}" 
   make package/"\${package}"/compile \\
-    -j${NPROC}
+    -j${NPROC} V=s
 done
 
 # Enable recursive globbing for directory matching
