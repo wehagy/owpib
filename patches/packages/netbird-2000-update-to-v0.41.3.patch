@@ -1,0 +1,31 @@
+From ea34045a93ed0cdc7e2c19fc42d75383539fee2e Mon Sep 17 00:00:00 2001
+From: Wesley Gimenes <wehagy@proton.me>
+Date: Sat, 19 Apr 2025 16:52:50 -0300
+Subject: [PATCH] netbird: update to 0.41.3
+
+changelog: https://github.com/netbirdio/netbird/releases/tag/v0.41.3
+
+Signed-off-by: Wesley Gimenes <wehagy@proton.me>
+---
+ net/netbird/Makefile | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/net/netbird/Makefile b/net/netbird/Makefile
+index 15e5ed9b1..c2790dcb1 100644
+--- a/net/netbird/Makefile
++++ b/net/netbird/Makefile
+@@ -1,12 +1,12 @@
+ include $(TOPDIR)/rules.mk
+ 
+ PKG_NAME:=netbird
+-PKG_VERSION:=0.41.2
++PKG_VERSION:=0.41.3
+ PKG_RELEASE:=1
+ 
+ PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
+ PKG_SOURCE_URL:=https://codeload.github.com/netbirdio/netbird/tar.gz/v$(PKG_VERSION)?
+-PKG_HASH:=d315e05476d50ee7333c3a7feb9faee4cab08c400ad64055c28420846fbe6560
++PKG_HASH:=69a9f7f67321dfbf339135b33c6e3a9ed468a657b81a1519b98e3b653dd8d58d
+ 
+ PKG_MAINTAINER:=Wesley Gimenes <wehagy@proton.me>
+ PKG_LICENSE:=BSD-3-Clause
