@@ -1,0 +1,31 @@
+From 245bc246ddde99b23dbc44cbd6b71175943695c1 Mon Sep 17 00:00:00 2001
+From: Wesley Gimenes <wehagy@proton.me>
+Date: Thu, 5 Jun 2025 13:08:46 -0300
+Subject: [PATCH] netbird: update to 0.46.0
+
+changelog: https://github.com/netbirdio/netbird/releases/tag/v0.46.0
+
+Signed-off-by: Wesley Gimenes <wehagy@proton.me>
+---
+ net/netbird/Makefile | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/net/netbird/Makefile b/net/netbird/Makefile
+index 767b7b2bb..12acd663f 100644
+--- a/net/netbird/Makefile
++++ b/net/netbird/Makefile
+@@ -1,12 +1,12 @@
+ include $(TOPDIR)/rules.mk
+ 
+ PKG_NAME:=netbird
+-PKG_VERSION:=0.45.3
++PKG_VERSION:=0.46.0
+ PKG_RELEASE:=1
+ 
+ PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
+ PKG_SOURCE_URL:=https://codeload.github.com/netbirdio/netbird/tar.gz/v$(PKG_VERSION)?
+-PKG_HASH:=57723dcf41d0cfc73205ec82cf8e409ede94e072076cfb73cd8f0c361833c7b8
++PKG_HASH:=2366033674e90db1bf28a54a9c44a4a0bc749376e4d24fcdeeadd5d6457c18ab
+ 
+ PKG_MAINTAINER:=Wesley Gimenes <wehagy@proton.me>
+ PKG_LICENSE:=BSD-3-Clause
