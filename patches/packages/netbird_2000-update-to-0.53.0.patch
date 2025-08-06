@@ -1,0 +1,118 @@
+From c40bb9d3fbda23261fa7ab659ba27b4da9ebf6d6 Mon Sep 17 00:00:00 2001
+From: Wesley Gimenes <wehagy@proton.me>
+Date: Tue, 5 Aug 2025 09:53:05 -0300
+Subject: [PATCH 1/3] netbird: cleanup init script
+
+Remove the parameters added in the commit 7b3d033ab651dd11e0db5fb099d106c9e09a2dc6.
+This reestablishes the `netbird` connection when the `wan` changes state,
+but `netbird` already takes care of it. If it doesn't, this is a bug
+and needs to be reported upstream.
+
+Signed-off-by: Wesley Gimenes <wehagy@proton.me>
+---
+ net/netbird/files/netbird.init | 8 --------
+ 1 file changed, 8 deletions(-)
+
+diff --git a/net/netbird/files/netbird.init b/net/netbird/files/netbird.init
+index 87427c406..b7ccd2d4b 100755
+--- a/net/netbird/files/netbird.init
++++ b/net/netbird/files/netbird.init
+@@ -1,19 +1,11 @@
+ #!/bin/sh /etc/rc.common
+ 
+-. /lib/netifd/netifd-proto.sh
+-
+ START=99
+ STOP=10
+ 
+ USE_PROCD=1
+ 
+-service_triggers() {
+-	procd_add_interface_trigger "interface.*" "wan" /etc/init.d/netbird restart
+-}
+-
+ start_service() {
+-	local device
+-
+ 	procd_open_instance
+ 	procd_set_param command /usr/bin/netbird
+ 	procd_append_param command service run
+
+From 62104530a96cebedc23b105b0659a6920032b842 Mon Sep 17 00:00:00 2001
+From: Wesley Gimenes <wehagy@proton.me>
+Date: Tue, 5 Aug 2025 10:10:21 -0300
+Subject: [PATCH 2/3] netbird: update to 0.52.2
+
+changelog: https://github.com/netbirdio/netbird/releases/tag/v0.52.2
+
+`netbird` now supports profiles.
+With this change, the configuration file has been changed from the
+file `/etc/netbird/config.json` to the directory `/var/lib/netbird/`.
+The migration is handled by `netbird` itself, and the documentation
+about this change can be seen here: https://docs.netbird.io/how-to/profiles.
+
+Signed-off-by: Wesley Gimenes <wehagy@proton.me>
+---
+ net/netbird/Makefile | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/net/netbird/Makefile b/net/netbird/Makefile
+index 3e7a2e522..97a10b05f 100644
+--- a/net/netbird/Makefile
++++ b/net/netbird/Makefile
+@@ -1,12 +1,12 @@
+ include $(TOPDIR)/rules.mk
+ 
+ PKG_NAME:=netbird
+-PKG_VERSION:=0.51.2
++PKG_VERSION:=0.52.2
+ PKG_RELEASE:=1
+ 
+ PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
+ PKG_SOURCE_URL:=https://codeload.github.com/netbirdio/netbird/tar.gz/v$(PKG_VERSION)?
+-PKG_HASH:=98d6dba5c6b63c2742471ef8a09628e46bf0b2545f99a327537a60b27391c73e
++PKG_HASH:=0c798932bed1b1c2dbe1de692efad7f60c875caee2da9fa797de5b4740b8a0e5
+ 
+ PKG_MAINTAINER:=Wesley Gimenes <wehagy@proton.me>
+ PKG_LICENSE:=BSD-3-Clause
+@@ -41,7 +41,7 @@ define Package/netbird/description
+ endef
+ 
+ define Package/netbird/conffiles
+-/etc/netbird/config.json
++/var/lib/netbird/
+ endef
+ 
+ define Package/netbird/install
+
+From 31df1cf9338aa51b901da07b2db94a1b91197bc1 Mon Sep 17 00:00:00 2001
+From: Wesley Gimenes <wehagy@proton.me>
+Date: Wed, 6 Aug 2025 16:51:56 -0300
+Subject: [PATCH 3/3] netbird: update to 0.53.0
+
+changelog: https://github.com/netbirdio/netbird/releases/tag/v0.53.0
+
+Signed-off-by: Wesley Gimenes <wehagy@proton.me>
+---
+ net/netbird/Makefile | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/net/netbird/Makefile b/net/netbird/Makefile
+index 97a10b05f..3c6f70ef5 100644
+--- a/net/netbird/Makefile
++++ b/net/netbird/Makefile
+@@ -1,12 +1,12 @@
+ include $(TOPDIR)/rules.mk
+ 
+ PKG_NAME:=netbird
+-PKG_VERSION:=0.52.2
++PKG_VERSION:=0.53.0
+ PKG_RELEASE:=1
+ 
+ PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
+ PKG_SOURCE_URL:=https://codeload.github.com/netbirdio/netbird/tar.gz/v$(PKG_VERSION)?
+-PKG_HASH:=0c798932bed1b1c2dbe1de692efad7f60c875caee2da9fa797de5b4740b8a0e5
++PKG_HASH:=47dde2b5b8fcb488bd6aa9aab769efb45ca4c1cc21253d44f7a68b44e7aeda8a
+ 
+ PKG_MAINTAINER:=Wesley Gimenes <wehagy@proton.me>
+ PKG_LICENSE:=BSD-3-Clause
