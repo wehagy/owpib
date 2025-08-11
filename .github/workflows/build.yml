@@ -22,14 +22,17 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        image:
+        images:
+          # <TARGET> <SUBTARGET> <PROFILE>
           # W
           - "x86 64 generic"
-          - "ath79 generic tplink_archer-c7-v4"
           - "mediatek filogic xiaomi_mi-router-ax3000t-ubootmod"
+          - "ath79 generic tplink_archer-c7-v4"
           # P
           - "ramips mt7621 totolink_x5000r"
           - "mediatek filogic bananapi_bpi-r3"
+        packages:
+          - "luci-app-attendedsysupgrade luci-app-uhttpd owut"
 #        include:
 #          # W
 #          - target: "x86"
@@ -68,7 +71,7 @@ jobs:
 #          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name : Build
-        run: ./owpib ${{ matrix.image }} --install luci-app-uhttpd
+        run: ./owpib ${{ matrix.images }} --install ${{ matrix.packages }}
 #      - name: Build and push
 #        uses: docker/build-push-action@v6
 #        with:
@@ -81,5 +84,5 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: openwrt ${{ matrix.image }}
+          name: openwrt ${{ matrix.images }}
           path: build-output/openwrt-*
