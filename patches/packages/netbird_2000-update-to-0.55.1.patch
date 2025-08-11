@@ -1,0 +1,166 @@
+From 562f1d834b84be050f57620d45c9d5b052cb6133 Mon Sep 17 00:00:00 2001
+From: Wesley Gimenes <wehagy@proton.me>
+Date: Tue, 22 Jul 2025 09:17:43 -0300
+Subject: [PATCH 1/4] netbird: update to 0.51.2
+
+changelog: https://github.com/netbirdio/netbird/releases/tag/v0.51.2
+
+Signed-off-by: Wesley Gimenes <wehagy@proton.me>
+(cherry picked from commit eb3165b80c70176b078a4b9f1c396851f25e54fe)
+---
+ net/netbird/Makefile | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/net/netbird/Makefile b/net/netbird/Makefile
+index 1976cd59b..3e7a2e522 100644
+--- a/net/netbird/Makefile
++++ b/net/netbird/Makefile
+@@ -1,12 +1,12 @@
+ include $(TOPDIR)/rules.mk
+ 
+ PKG_NAME:=netbird
+-PKG_VERSION:=0.50.2
++PKG_VERSION:=0.51.2
+ PKG_RELEASE:=1
+ 
+ PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
+ PKG_SOURCE_URL:=https://codeload.github.com/netbirdio/netbird/tar.gz/v$(PKG_VERSION)?
+-PKG_HASH:=d3f0838dfa279ed8af9443294770308be8d2a9e070478dbba23ca42e20da403b
++PKG_HASH:=98d6dba5c6b63c2742471ef8a09628e46bf0b2545f99a327537a60b27391c73e
+ 
+ PKG_MAINTAINER:=Wesley Gimenes <wehagy@proton.me>
+ PKG_LICENSE:=BSD-3-Clause
+
+From e8010a3cb691c60a556eba1595752d9753ec7b82 Mon Sep 17 00:00:00 2001
+From: Wesley Gimenes <wehagy@proton.me>
+Date: Tue, 5 Aug 2025 10:10:21 -0300
+Subject: [PATCH 2/4] netbird: update to 0.52.2
+
+changelog: https://github.com/netbirdio/netbird/releases/tag/v0.52.2
+
+`netbird` now supports profiles [1]. The configuration file has been
+moved from `/etc/netbird/config.json` to `/var/lib/netbird/`. The
+migration is handled by `netbird` itself.
+
+However, in OpenWrt, the `/var` directory is a symbolic link to
+`/tmp`, which is a temporary directory. This can result in
+configuration loss after rebooting or flashing a new image. This
+issue will be fixed in the next release, 0.53.0.
+**I reported this behavior upstream [2].**
+
+[1]: https://docs.netbird.io/how-to/profiles
+[2]: https://github.com/netbirdio/netbird/issues/4322
+
+Signed-off-by: Wesley Gimenes <wehagy@proton.me>
+(cherry picked from commit f06a83c461810296615433a4ad31743d68c162a1)
+---
+ net/netbird/Makefile | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/net/netbird/Makefile b/net/netbird/Makefile
+index 3e7a2e522..53947ca56 100644
+--- a/net/netbird/Makefile
++++ b/net/netbird/Makefile
+@@ -1,12 +1,12 @@
+ include $(TOPDIR)/rules.mk
+ 
+ PKG_NAME:=netbird
+-PKG_VERSION:=0.51.2
++PKG_VERSION:=0.52.2
+ PKG_RELEASE:=1
+ 
+ PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
+ PKG_SOURCE_URL:=https://codeload.github.com/netbirdio/netbird/tar.gz/v$(PKG_VERSION)?
+-PKG_HASH:=98d6dba5c6b63c2742471ef8a09628e46bf0b2545f99a327537a60b27391c73e
++PKG_HASH:=0c798932bed1b1c2dbe1de692efad7f60c875caee2da9fa797de5b4740b8a0e5
+ 
+ PKG_MAINTAINER:=Wesley Gimenes <wehagy@proton.me>
+ PKG_LICENSE:=BSD-3-Clause
+
+From aaf511498b0b3756ba5d405155662cc3d26ebd7e Mon Sep 17 00:00:00 2001
+From: Wesley Gimenes <wehagy@proton.me>
+Date: Wed, 6 Aug 2025 16:51:56 -0300
+Subject: [PATCH 3/4] netbird: update to 0.53.0 with config fix
+
+changelog: https://github.com/netbirdio/netbird/releases/tag/v0.53.0
+
+Update init file to include `NB_CONFIG="/etc/netbird/config.json"`
+variable, ensuring configuration compatibility as before (fixes issue
+introduced by profiles feature in 0.52.2). Existing configurations remain
+compatible.
+
+Note: license for some components (`management`, `relay`, `signal`) changed
+to **AGPLv3**. These components aren't packaged for OpenWrt, so there's no
+immediate effect, but record the change for future reference.
+
+Signed-off-by: Wesley Gimenes <wehagy@proton.me>
+(cherry picked from commit 7c3e0c1e5b804989b8e4d4310fec240cd43c9776)
+---
+ net/netbird/Makefile           | 4 ++--
+ net/netbird/files/netbird.init | 1 +
+ 2 files changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/net/netbird/Makefile b/net/netbird/Makefile
+index 53947ca56..fe21b4d04 100644
+--- a/net/netbird/Makefile
++++ b/net/netbird/Makefile
+@@ -1,12 +1,12 @@
+ include $(TOPDIR)/rules.mk
+ 
+ PKG_NAME:=netbird
+-PKG_VERSION:=0.52.2
++PKG_VERSION:=0.53.0
+ PKG_RELEASE:=1
+ 
+ PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
+ PKG_SOURCE_URL:=https://codeload.github.com/netbirdio/netbird/tar.gz/v$(PKG_VERSION)?
+-PKG_HASH:=0c798932bed1b1c2dbe1de692efad7f60c875caee2da9fa797de5b4740b8a0e5
++PKG_HASH:=47dde2b5b8fcb488bd6aa9aab769efb45ca4c1cc21253d44f7a68b44e7aeda8a
+ 
+ PKG_MAINTAINER:=Wesley Gimenes <wehagy@proton.me>
+ PKG_LICENSE:=BSD-3-Clause
+diff --git a/net/netbird/files/netbird.init b/net/netbird/files/netbird.init
+index 87427c406..00e23fe05 100755
+--- a/net/netbird/files/netbird.init
++++ b/net/netbird/files/netbird.init
+@@ -16,6 +16,7 @@ start_service() {
+ 
+ 	procd_open_instance
+ 	procd_set_param command /usr/bin/netbird
++	procd_set_param env NB_CONFIG="/etc/netbird/config.json"
+ 	procd_append_param command service run
+ 	procd_set_param pidfile /var/run/netbird.pid
+ 	procd_close_instance
+
+From 18d0e794f93fc37e620e1eae499a89a599f504eb Mon Sep 17 00:00:00 2001
+From: Wesley Gimenes <wehagy@proton.me>
+Date: Sun, 10 Aug 2025 22:19:57 -0300
+Subject: [PATCH 4/4] netbird: update to 0.55.1
+
+changelog: https://github.com/netbirdio/netbird/releases/tag/v0.55.1
+
+Signed-off-by: Wesley Gimenes <wehagy@proton.me>
+(cherry picked from commit 0bb7df85b855e35c8388122afc962054117d1c70)
+---
+ net/netbird/Makefile | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/net/netbird/Makefile b/net/netbird/Makefile
+index fe21b4d04..4714f7de3 100644
+--- a/net/netbird/Makefile
++++ b/net/netbird/Makefile
+@@ -1,12 +1,12 @@
+ include $(TOPDIR)/rules.mk
+ 
+ PKG_NAME:=netbird
+-PKG_VERSION:=0.53.0
++PKG_VERSION:=0.55.1
+ PKG_RELEASE:=1
+ 
+ PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
+ PKG_SOURCE_URL:=https://codeload.github.com/netbirdio/netbird/tar.gz/v$(PKG_VERSION)?
+-PKG_HASH:=47dde2b5b8fcb488bd6aa9aab769efb45ca4c1cc21253d44f7a68b44e7aeda8a
++PKG_HASH:=b9465a2b6b7600ec7f22a706b2f2891fdb19a07ffcbfd82cd0e33176d3c69b75
+ 
+ PKG_MAINTAINER:=Wesley Gimenes <wehagy@proton.me>
+ PKG_LICENSE:=BSD-3-Clause

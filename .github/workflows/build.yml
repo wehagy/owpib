@@ -71,7 +71,7 @@ jobs:
 #          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name : Build
-        run: ./owpib ${{ matrix.images }} --install ${{ matrix.packages }}
+        run: ./owpib ${{ matrix.images }} openwrt-24.10 --install ${{ matrix.packages }}
 #      - name: Build and push
 #        uses: docker/build-push-action@v6
 #        with:
