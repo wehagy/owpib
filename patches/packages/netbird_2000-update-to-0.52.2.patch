@@ -1,0 +1,32 @@
+From a2835e8eb12f86c5817f6810a60dd07eb62c04ec Mon Sep 17 00:00:00 2001
+From: Wesley Gimenes <wehagy@proton.me>
+Date: Tue, 22 Jul 2025 09:17:43 -0300
+Subject: [PATCH] netbird: update to 0.51.2
+
+changelog: https://github.com/netbirdio/netbird/releases/tag/v0.51.2
+
+Signed-off-by: Wesley Gimenes <wehagy@proton.me>
+(cherry picked from commit eb3165b80c70176b078a4b9f1c396851f25e54fe)
+---
+ net/netbird/Makefile | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/net/netbird/Makefile b/net/netbird/Makefile
+index 1976cd59b..3e7a2e522 100644
+--- a/net/netbird/Makefile
++++ b/net/netbird/Makefile
+@@ -1,12 +1,12 @@
+ include $(TOPDIR)/rules.mk
+ 
+ PKG_NAME:=netbird
+-PKG_VERSION:=0.50.2
++PKG_VERSION:=0.51.2
+ PKG_RELEASE:=1
+ 
+ PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
+ PKG_SOURCE_URL:=https://codeload.github.com/netbirdio/netbird/tar.gz/v$(PKG_VERSION)?
+-PKG_HASH:=d3f0838dfa279ed8af9443294770308be8d2a9e070478dbba23ca42e20da403b
++PKG_HASH:=98d6dba5c6b63c2742471ef8a09628e46bf0b2545f99a327537a60b27391c73e
+ 
+ PKG_MAINTAINER:=Wesley Gimenes <wehagy@proton.me>
+ PKG_LICENSE:=BSD-3-Clause
