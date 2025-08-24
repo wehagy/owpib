@@ -1,0 +1,249 @@
+From dc23e294701ab325593bdef67483697049d83371 Mon Sep 17 00:00:00 2001
+From: Wesley Gimenes <wehagy@proton.me>
+Date: Tue, 5 Aug 2025 09:53:05 -0300
+Subject: [PATCH 1/5] netbird: cleanup init script
+
+Remove parameters added in commit 7b3d033ab651dd11e0db5fb099d106c9e09a2dc6
+that were intended to reestablish the `netbird` connection when the
+`wan` state changes. This functionality is already handled by
+`netbird`. If it fails, it should be reported as a bug upstream.
+
+Signed-off-by: Wesley Gimenes <wehagy@proton.me>
+---
+ net/netbird/Makefile           | 2 +-
+ net/netbird/files/netbird.init | 8 --------
+ 2 files changed, 1 insertion(+), 9 deletions(-)
+
+diff --git a/net/netbird/Makefile b/net/netbird/Makefile
+index 3e7a2e522..2102ad309 100644
+--- a/net/netbird/Makefile
++++ b/net/netbird/Makefile
+@@ -2,7 +2,7 @@ include $(TOPDIR)/rules.mk
+ 
+ PKG_NAME:=netbird
+ PKG_VERSION:=0.51.2
+-PKG_RELEASE:=1
++PKG_RELEASE:=2
+ 
+ PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
+ PKG_SOURCE_URL:=https://codeload.github.com/netbirdio/netbird/tar.gz/v$(PKG_VERSION)?
+diff --git a/net/netbird/files/netbird.init b/net/netbird/files/netbird.init
+index 87427c406..b7ccd2d4b 100755
+--- a/net/netbird/files/netbird.init
++++ b/net/netbird/files/netbird.init
+@@ -1,19 +1,11 @@
+ #!/bin/sh /etc/rc.common
+ 
+-. /lib/netifd/netifd-proto.sh
+-
+ START=99
+ STOP=10
+ 
+ USE_PROCD=1
+ 
+-service_triggers() {
+-	procd_add_interface_trigger "interface.*" "wan" /etc/init.d/netbird restart
+-}
+-
+ start_service() {
+-	local device
+-
+ 	procd_open_instance
+ 	procd_set_param command /usr/bin/netbird
+ 	procd_append_param command service run
+
+From 5e526099adcd20289b09652dc08c74029279bd20 Mon Sep 17 00:00:00 2001
+From: Wesley Gimenes <wehagy@proton.me>
+Date: Tue, 5 Aug 2025 10:10:21 -0300
+Subject: [PATCH 2/5] netbird: update to 0.52.2
+
+changelog: https://github.com/netbirdio/netbird/releases/tag/v0.52.2
+
+`netbird` now supports profiles [1]. The configuration file has been
+moved from `/etc/netbird/config.json` to `/var/lib/netbird/`. The
+migration is handled by `netbird` itself.
+
+However, in OpenWrt, the `/var` directory is a symbolic link to
+`/tmp`, which is a temporary directory. This can result in
+configuration loss after rebooting or flashing a new image. This
+issue will be fixed in the next release, 0.53.0.
+**I reported this behavior upstream [2].**
+
+[1]: https://docs.netbird.io/how-to/profiles
+[2]: https://github.com/netbirdio/netbird/issues/4322
+
+Signed-off-by: Wesley Gimenes <wehagy@proton.me>
+---
+ net/netbird/Makefile | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/net/netbird/Makefile b/net/netbird/Makefile
+index 2102ad309..53947ca56 100644
+--- a/net/netbird/Makefile
++++ b/net/netbird/Makefile
+@@ -1,12 +1,12 @@
+ include $(TOPDIR)/rules.mk
+ 
+ PKG_NAME:=netbird
+-PKG_VERSION:=0.51.2
+-PKG_RELEASE:=2
++PKG_VERSION:=0.52.2
++PKG_RELEASE:=1
+ 
+ PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
+ PKG_SOURCE_URL:=https://codeload.github.com/netbirdio/netbird/tar.gz/v$(PKG_VERSION)?
+-PKG_HASH:=98d6dba5c6b63c2742471ef8a09628e46bf0b2545f99a327537a60b27391c73e
++PKG_HASH:=0c798932bed1b1c2dbe1de692efad7f60c875caee2da9fa797de5b4740b8a0e5
+ 
+ PKG_MAINTAINER:=Wesley Gimenes <wehagy@proton.me>
+ PKG_LICENSE:=BSD-3-Clause
+
+From 0cd84a9e427b782f9de5b12cdf9816790159068c Mon Sep 17 00:00:00 2001
+From: Wesley Gimenes <wehagy@proton.me>
+Date: Wed, 6 Aug 2025 16:51:56 -0300
+Subject: [PATCH 3/5] netbird: update to 0.53.0 with config fix
+
+changelog: https://github.com/netbirdio/netbird/releases/tag/v0.53.0
+
+Update init file to include `NB_CONFIG="/etc/netbird/config.json"`
+variable, ensuring configuration compatibility as before (fixes issue
+introduced by profiles feature in 0.52.2). Existing configurations remain
+compatible.
+
+Note: license for some components (`management`, `relay`, `signal`) changed
+to **AGPLv3**. These components aren't packaged for OpenWrt, so there's no
+immediate effect, but record the change for future reference.
+
+Signed-off-by: Wesley Gimenes <wehagy@proton.me>
+---
+ net/netbird/Makefile           | 4 ++--
+ net/netbird/files/netbird.init | 1 +
+ 2 files changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/net/netbird/Makefile b/net/netbird/Makefile
+index 53947ca56..fe21b4d04 100644
+--- a/net/netbird/Makefile
++++ b/net/netbird/Makefile
+@@ -1,12 +1,12 @@
+ include $(TOPDIR)/rules.mk
+ 
+ PKG_NAME:=netbird
+-PKG_VERSION:=0.52.2
++PKG_VERSION:=0.53.0
+ PKG_RELEASE:=1
+ 
+ PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
+ PKG_SOURCE_URL:=https://codeload.github.com/netbirdio/netbird/tar.gz/v$(PKG_VERSION)?
+-PKG_HASH:=0c798932bed1b1c2dbe1de692efad7f60c875caee2da9fa797de5b4740b8a0e5
++PKG_HASH:=47dde2b5b8fcb488bd6aa9aab769efb45ca4c1cc21253d44f7a68b44e7aeda8a
+ 
+ PKG_MAINTAINER:=Wesley Gimenes <wehagy@proton.me>
+ PKG_LICENSE:=BSD-3-Clause
+diff --git a/net/netbird/files/netbird.init b/net/netbird/files/netbird.init
+index b7ccd2d4b..b5a0930c5 100755
+--- a/net/netbird/files/netbird.init
++++ b/net/netbird/files/netbird.init
+@@ -8,6 +8,7 @@ USE_PROCD=1
+ start_service() {
+ 	procd_open_instance
+ 	procd_set_param command /usr/bin/netbird
++	procd_set_param env NB_CONFIG="/etc/netbird/config.json"
+ 	procd_append_param command service run
+ 	procd_set_param pidfile /var/run/netbird.pid
+ 	procd_close_instance
+
+From 81946c125454d9846c55d9ea679c7c38b657d316 Mon Sep 17 00:00:00 2001
+From: Wesley Gimenes <wehagy@proton.me>
+Date: Sun, 10 Aug 2025 22:19:57 -0300
+Subject: [PATCH 4/5] netbird: update to 0.55.1
+
+changelog: https://github.com/netbirdio/netbird/releases/tag/v0.55.1
+
+Signed-off-by: Wesley Gimenes <wehagy@proton.me>
+---
+ net/netbird/Makefile | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/net/netbird/Makefile b/net/netbird/Makefile
+index fe21b4d04..4714f7de3 100644
+--- a/net/netbird/Makefile
++++ b/net/netbird/Makefile
+@@ -1,12 +1,12 @@
+ include $(TOPDIR)/rules.mk
+ 
+ PKG_NAME:=netbird
+-PKG_VERSION:=0.53.0
++PKG_VERSION:=0.55.1
+ PKG_RELEASE:=1
+ 
+ PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
+ PKG_SOURCE_URL:=https://codeload.github.com/netbirdio/netbird/tar.gz/v$(PKG_VERSION)?
+-PKG_HASH:=47dde2b5b8fcb488bd6aa9aab769efb45ca4c1cc21253d44f7a68b44e7aeda8a
++PKG_HASH:=b9465a2b6b7600ec7f22a706b2f2891fdb19a07ffcbfd82cd0e33176d3c69b75
+ 
+ PKG_MAINTAINER:=Wesley Gimenes <wehagy@proton.me>
+ PKG_LICENSE:=BSD-3-Clause
+
+From a4b77706dff7051d7dde3f062ef45b1201fd7c7a Mon Sep 17 00:00:00 2001
+From: Wesley Gimenes <wehagy@proton.me>
+Date: Tue, 26 Aug 2025 17:01:14 -0300
+Subject: [PATCH 5/5] netbird: switch to profile-based configuration
+
+Add support for `netbird` profiles feature [1] (introduced in 0.52.2). Use
+`NB_STATE_DIR="/root/.config/netbird"` in the init file instead of the
+previous `NB_CONFIG="/etc/netbird/config.json"`, and update Makefile
+configuration paths accordingly.
+
+Rationale: `netbird` saves state/configuration under `/var` by default. On
+OpenWrt, `/var` is a symlink to `/tmp` (a volatile location), which would
+cause config loss after reboot or reflash. Using `/root/.config/netbird`
+avoids this, it's a valid upstream directory not used by default.
+`netbird` will migrate existing configurations.
+
+This change will not be backported to preserve the current meaning of
+"stable" in OpenWrt and to avoid (unlikely but possible) breakage of
+existing installations.
+
+[1]: https://docs.netbird.io/how-to/profiles
+
+Signed-off-by: Wesley Gimenes <wehagy@proton.me>
+---
+ net/netbird/Makefile           | 4 ++--
+ net/netbird/files/netbird.init | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/net/netbird/Makefile b/net/netbird/Makefile
+index 4714f7de3..d26e66fdd 100644
+--- a/net/netbird/Makefile
++++ b/net/netbird/Makefile
+@@ -2,7 +2,7 @@ include $(TOPDIR)/rules.mk
+ 
+ PKG_NAME:=netbird
+ PKG_VERSION:=0.55.1
+-PKG_RELEASE:=1
++PKG_RELEASE:=2
+ 
+ PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
+ PKG_SOURCE_URL:=https://codeload.github.com/netbirdio/netbird/tar.gz/v$(PKG_VERSION)?
+@@ -41,7 +41,7 @@ define Package/netbird/description
+ endef
+ 
+ define Package/netbird/conffiles
+-/etc/netbird/config.json
++/root/.config/netbird/
+ endef
+ 
+ define Package/netbird/install
+diff --git a/net/netbird/files/netbird.init b/net/netbird/files/netbird.init
+index b5a0930c5..84ad69128 100755
+--- a/net/netbird/files/netbird.init
++++ b/net/netbird/files/netbird.init
+@@ -8,7 +8,7 @@ USE_PROCD=1
+ start_service() {
+ 	procd_open_instance
+ 	procd_set_param command /usr/bin/netbird
+-	procd_set_param env NB_CONFIG="/etc/netbird/config.json"
++	procd_set_param env NB_STATE_DIR="/root/.config/netbird"
+ 	procd_append_param command service run
+ 	procd_set_param pidfile /var/run/netbird.pid
+ 	procd_close_instance
